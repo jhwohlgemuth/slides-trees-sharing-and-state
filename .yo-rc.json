@@ -1,0 +1,11 @@
+{
+  "generator-presto-preso": {
+    "promptValues": {
+      "githubname": "jhwohlgemuth",
+      "author": "jhwohlgemuth",
+      "authorurl": "",
+      "license": "MIT",
+      "twittername": "@jhwohlgemuth"
+    }
+  }
+}

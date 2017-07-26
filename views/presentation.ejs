@@ -1,0 +1,357 @@
+<div class="reveal">
+	<div class="slides">
+<!-- slide -->
+		<section data-markdown>
+			<script type="text/template">
+				## Trees, Sharing, & One-way Streets
+				#### [Immutable.js](https://facebook.github.io/immutable-js/) and [Redux.js](http://redux.js.org/)
+				<br /> [by Jason Wohlgemuth](https://twitter.com/@jhwohlgemuth)
+			</script>
+		</section>
+<!-- slide -->
+		<section data-markdown data-transition="convex">
+			<script type="text/template">
+				## Who Am I?
+				##### Jason Wohlgemuth
+				<img src="img/profile.jpg" class="img-circle img-responsive img-center profile" />
+				<br /> [
+				<i class="fa fa-twitter" aria-hidden="true"></i>/@jhwohlgemuth](https://twitter.com/@jhwohlgemuth)&nbsp;&nbsp;&nbsp;[<i class="fa fa-github" aria-hidden="true"></i>/jhwohlgemuth](https://github.com/jhwohlgemuth)<br />
+			</script>
+		</section>
+<!-- slide -->
+		<section id="agenda">
+			<h2>Agenda</h2>
+			<ol>
+				<li class="fragment fade-up">ES6 Primer</li>
+				<li class="fragment fade-up">The "3 T's of Functional Programming"</li>
+				<li class="fragment fade-up">GitHub repository tours</li>
+				<li class="fragment fade-up"><q>"Some things never change...some things do"</q></li>
+				<li class="fragment fade-up"><q>"love what you're doing with Redux"</q></li>
+			</ol>
+		</section>
+<!-- slide -->
+		<section id="es6-primer">
+			<section data-markdown>
+				### ES6 Primer
+				- Object shorthand property names
+				- Destructuring assignment
+				- Rest and Spread
+				- Arrow functions
+			</section>
+			<section id="object-shorthand">
+				<h3>Object shorthand property names</h3>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES5
+var color = 'blue';
+var size = 'small';
+var smurf = {
+    color: color,
+    size: size
+};
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES6
+let color = 'blue';
+let size = 'small';
+let smurf = {color, size};// {color: 'blue', size: 'small'}
+					</code></pre>
+				</div>
+			</section>
+			<section id="destructuring-assignment">
+				<h3>Destructuring assignment</h3>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES5
+var Immutable = require('immutable');
+var List = Immutable.List;
+var Seq = Immutable.Seq;
+var name = 'Brainy';
+var type = smurf;
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES6
+const {List, Seq} = require('immutable');
+let [name, type] = ['Brainy', smurf];// name === 'Brainy'
+					</code></pre>
+				</div>
+			</section>
+			<section id="rest-parameters">
+				<h3>Rest Parameters</h3>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES5
+function f(a, b) {
+    var args = Array.prototype.slice.call(arguments, f.length);
+    // do something with args array
+}
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES6
+function f(a, b, ...args) {
+    // do something with a, b, and args
+}
+					</code></pre>
+				</div>
+				<ul>
+					<li class="fragment">Reduce boilerplate code</li>
+				</ul>
+			</section>
+
+			<section id="spread-syntax">
+				<h3>Spread Syntax</h3>
+				<pre><code data-trim>
+function foo(x, y, z) {/* logic and stuff */}
+let nums = [2, 3, 4];
+				</code></pre>
+				<div class="fragment">
+					<pre><code class="javascript" data-trim>
+// ES5
+foo.apply(null, nums);
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript" data-trim>
+// ES6
+foo(...nums);
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// Array concatenation
+[1, ...nums, 5, 6]// [1, 2, 3, 4, 5, 6]
+[1, 2, 3, ...nums]// [1, 2, 3, 2, 3, 4]
+[...nums, 3, 2, 1]// [2, 3, 4, 3, 2, 1]
+					</code></pre>
+				</div>
+				<ul>
+					<li class="fragment">Reduce <i>more</i> boilerplate code</li>
+				</ul>
+			</section>
+
+			<section id="arrow-functions">
+				<h3>Arrow Functions</h3>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES5
+var isEven = function(num) {
+    return num % 2 === 0;
+};
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// ES6
+let isEven = num => (num % 2 === 0);
+					</code></pre>
+				</div>
+				<ul>
+					<li class="fragment">shorter functions</li>
+					<li class="fragment">non-binding of <code>this</code></li>
+				</ul>
+			</section>
+			<section id="arrow-functions-in-action">
+				<h3>Arrow Functions in Action</h3>
+				<div class="fragment">
+					<pre><code class="javascript">
+// NO-OP
+let noop = () => {};
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// predicates
+[1, 2, 3, 4, 5].some(num => (num % 2 === 0));// true
+					</code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="javascript">
+// chaining
+[1, 2, 3, 4, 5]
+    .map(num => ++num)// add 1
+    .map(num => num)  // identity
+    .filter(isEven);  // [2, 4, 6]
+					</code></pre>
+				</div>
+			</section>
+		</section>
+<!-- slide -->
+		<section id="functional-programming-concepts">
+			<section id="three-tees-of-functional-programming" data-markdown>
+				### The 3 "T's" of Functional Programming
+				> Become "functionally" functional with...
+
+				- composabili-**TEE**
+				- immutabili-**TEE**
+				- puri-**TEE**
+
+			</section>
+			<section id="composabili-tee" >
+				<h2>Composability</h2>
+				<blockquote>
+					Build functions with functions
+				</blockquote>
+				<pre class="fragment"><code>
+let isNumberLike = val => !isNaN(Number(val));
+
+console.log(isNumberLike(3));//true
+console.log(isNumberLike('42'));//true
+console.log(isNumberLike('foo'));//false
+				</code></pre>
+				<div class="fragment">
+					Those that work with me might expect something like...
+					<pre><code>
+// require lodash functions
+const {flow, toNumber, negate} = require('lodash');
+
+let isNumberLike = flow(toNumber, negate(isNaN));
+					</code></pre>
+				</div>
+			</section>
+			<section style="margin: 0 25%;">
+				 <div class="tumblr-post" data-href="https://embed.tumblr.com/embed/post/dcJpVAvYGPYFZ1ntlGckfg/149273556583" data-did="da39a3ee5e6b4b0d3255bfef95601890afd80709"><a href="https://jhwohlgemuth.tumblr.com/post/149273556583">https://jhwohlgemuth.tumblr.com/post/149273556583</a></div>  <script async src="https://assets.tumblr.com/post.js"></script>
+			</section>
+			<section id="immutabili-tee">
+				<h2>Immutability</h2>
+				<blockquote>
+				    Favor immutable patterns
+				</blockquote>
+				<pre><code>
+// mutation
+let arr = [1, 2, 3, 4, 5];
+arr.push(6);
+console.log(arr);// [1, 2, 3, 4, 5, 6]
+				</code></pre>
+				<pre><code class="javascript">
+// no mutation...?
+let oldArr = [1, 2, 3, 4, 5];
+let newArr = oldArr.concat(6);
+				</code></pre>
+				<pre class="fragment"><code class="javascript">
+// no mutation!
+console.log(oldArr);// [1, 2, 3, 4, 5]
+console.log(newArr);// [1, 2, 3, 4, 5, 6]
+				</code></pre>
+			</section>
+			<section id="immutabili-tee-loops">
+				<h2>Immutability</h2>
+				<blockquote>
+					Favor immutable patterns
+				</blockquote>
+				<pre><code class="javascript">
+// mutation
+let nums = [1, 2, 3, 4, 5];
+for(var i = 0; i < nums.length; i++) {
+    nums[i] = nums[i] + 1;
+}
+				</code></pre>
+				<pre><code class="javascript">
+// no mutation...?
+let oldNums = [1, 2, 3, 4, 5];
+let newNums = oldNums.map(num => ++num);
+				</code></pre>
+				<pre class="fragment"><code class="javascript">
+// no mutation!
+console.log(oldNums);// [1, 2, 3, 4, 5]
+console.log(newNums);// [2, 3, 4, 5, 6]
+				</code></pre>
+				<aside class="notes">I had to look up how to use for blocks to write the first snippet</aside>
+			</section>
+			<section id="immutabili-tee-immutablejs" data-background-iframe="https://facebook.github.io/immutable-js/">
+				<span style="color: black;">...more on this later.</span>
+			</section>
+			<section id="puri-tee">
+				<h2>Purity</h2>
+				<blockquote>
+					Find balance between arity and state
+				</blockquote>
+				<pre class="fragment"><code>
+let foo = () => console.log('bar');
+let obj = {foo};
+				</code></pre>
+				<pre class="fragment"><code>
+// NOT PURE
+let triggerFooNotPure = () => obj.foo();
+				</code></pre>
+				<pre class="fragment"><code>
+// PURE
+let triggerFooPure = (obj) => obj.foo();
+				</code></pre>
+				<pre class="fragment"><code class="javascript">
+// pure functions generally have higher "arity"
+triggerFooNotPure();
+triggerFooPure(obj);
+				</code></pre>
+			</section>
+			<section id="puri-tee-redux" data-background-iframe="http://redux.js.org/">
+				<span style="color: black; background-color: rgba(255, 255, 255, 0.9);padding: 10px;border-radius: 10px;">...more on this later.</span>
+			</section>
+			<section style="margin: 0 25%; transform: scale(1.1);">
+				<blockquote class="twitter-tweet" data-lang="en">
+					<p lang="en" dir="ltr">JS Functional Programming Array.prototype cheat sheet <a href="https://t.co/diGW4FaOso">pic.twitter.com/diGW4FaOso</a></p>&mdash; Jason Wohlgemuth (@jhwohlgemuth) <a href="https://twitter.com/jhwohlgemuth/status/862812187282296833">May 11, 2017</a>
+				</blockquote>
+				<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+			</section>
+		</section>
+<!-- slide -->
+		<section id="repository-tours">
+			<iframe src="https://giphy.com/embed/WQD6NEEsVTvxK" width="480" height="360" frameBorder="0" class="stretch giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/WQD6NEEsVTvxK">via GIPHY</a></p>
+		</section>
+		<section id="immutable">
+			<section id="immutable-overview" data-markdown>
+				## Immutable.js
+				> It is all about ["Trees and Sharing"](https://www.youtube.com/watch?v=Wo0qiGPSV-s)
+
+				- ***Not*** a programming panacea
+				- ***Not*** a new concept
+				- ***Not*** the only option
+				- ***Not*** hard to learn
+			</section>
+			<section id="trees-and-sharing">
+				<h2>Tries and Sharing</h2>
+				<blockquote>Pronounced "tree"...comes from re<b>trie</b>val</blockquote>
+				<aside class="notes">
+					"Trees and sharing" comes from a talk by Anjana Vakil at JSConf EU 2017
+				</aside>
+			</section>
+			<section id="doing-it-wrong" data-background="img/doing_it_wrong.jpg" data-background-size="contain"></section>
+			<section id="not-a-panacea" data-markdown>
+				### Use Cases
+
+				- Your application has complex state
+				- Your application is built on React
+				- You often find yourself making "deep value" comparisons
+				- You like time travel to be "baked in"
+				- ~~You like mathematics~~
+			</section>
+			<section id="not-a-new-concept">
+				<h3>Immutability is not a new concept</h3>
+				...just ask a "real" language like Clojure(script).
+				<aside class="notes">
+					My point is that a language's "correctness" is not the only factor.
+					I am very interested in Clojure and ClojureScript, but the popularity of the two pail in comparison to JavaScript.
+				</aside>
+			</section>
+			<section id="oh-no-he-didnt" data-background="img/shocked.gif"></section>
+			<section id="not-the-only-option">
+				<h2>Not the only option</h2>
+			</section>
+		</section>
+		<section id="redux">
+
+		</section>
+		<section data-markdown>
+			# Another slide!
+
+			```javascript
+			console.log('boot');
+			```
+		</section>
+	</div>
+</div>
