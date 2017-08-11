@@ -14,8 +14,8 @@
 var color = 'blue';
 var size = 'small';
 var smurf = {
-color: color,
-size: size
+    color: color,
+    size: size
 };
             </code></pre>
         </div>
@@ -54,8 +54,8 @@ let [name, type] = ['Brainy', smurf];// name === 'Brainy'
             <pre><code class="javascript">
 // ES5
 function f(a, b) {
-var args = Array.prototype.slice.call(arguments, f.length);
-// do something with args array
+    var args = Array.prototype.slice.call(arguments, f.length);
+    // do something with args array
 }
             </code></pre>
         </div>
@@ -63,7 +63,7 @@ var args = Array.prototype.slice.call(arguments, f.length);
             <pre><code class="javascript">
 // ES6
 function f(a, b, ...args) {
-// do something with a, b, and args
+    // do something with a, b, and args
 }
             </code></pre>
         </div>
@@ -109,7 +109,7 @@ foo(...nums);
             <pre><code class="javascript">
 // ES5
 var isEven = function(num) {
-return num % 2 === 0;
+    return num % 2 === 0;
 };
             </code></pre>
         </div>
@@ -143,9 +143,9 @@ let noop = () => {};
             <pre><code class="javascript">
 // chaining
 [1, 2, 3, 4, 5]
-.map(num => ++num)// add 1
-.map(num => num)  // identity
-.filter(isEven);  // [2, 4, 6]
+    .map(num => ++num)// add 1
+    .map(num => num)  // identity
+    .filter(isEven);  // [2, 4, 6]
             </code></pre>
         </div>
     </section>
