@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="description" content="Brown Bag">
+	<meta name="author" content="Jason Wohlgemuth">
+	<title>Trees, Sharing & State</title>
+	<!-- Font Awesome! -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="components/reveal.js/css/reveal.css">
+	<link rel="stylesheet" href="components/reveal.js/css/theme/black.css" id="theme">
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? './components/reveal.js/css/print/pdf.css' : './components/reveal.js/css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+<body>
+
+
+	<div class="reveal">
+	<div class="slides">
+		<section id="title" data-markdown>
+			<script type="text/template">
+				## Trees, Sharing, & State
+				#### [Immutable.js](https://facebook.github.io/immutable-js/) and [Redux.js](http://redux.js.org/)
+				<br /> [by Jason Wohlgemuth](https://twitter.com/@jhwohlgemuth)
+			</script>
+		</section>
+		<section id="intro" data-markdown data-transition="convex">
+			<script type="text/template">
+				## Who Am I?
+				##### Jason Wohlgemuth
+				<img src="img/profile.jpg" class="img-circle img-responsive img-center profile" />
+				<br /> [
+				<i class="fa fa-twitter" aria-hidden="true"></i>/@jhwohlgemuth](https://twitter.com/@jhwohlgemuth)&nbsp;&nbsp;&nbsp;[<i class="fa fa-github" aria-hidden="true"></i>/jhwohlgemuth](https://github.com/jhwohlgemuth)<br />
+			</script>
+		</section>
+		<section id="agenda">
+			<h2>Agenda</h2>
+			<ol>
+				<li class="fragment fade-up">ES6 Primer (the docs are full of it)</li>
+				<li class="fragment fade-up">The "3 T's of Functional Programming"</li>
+				<li class="fragment fade-up"><q>"Some things never change...some things do"</q></li>
+				<li class="fragment fade-up"><q>"love what you're doing with Redux"</q></li>
+			</ol>
+		</section>
+		<section id="es6-primer">
+    <section data-markdown>
+        ### ES6 Primer
+        - Object shorthand property names
+        - Destructuring assignment
+        - Rest and Spread
+        - Arrow functions
+    </section>
+    <section id="object-shorthand">
+        <h3>Object shorthand property names</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var color = 'blue';
+var size = 'small';
+var smurf = {
+    color: color,
+    size: size
+};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+let color = 'blue';
+let size = 'small';
+let smurf = {color, size};// {color: 'blue', size: 'small'}
+            </code></pre>
+        </div>
+    </section>
+    <section id="destructuring-assignment">
+        <h3>Destructuring assignment</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var Immutable = require('immutable');
+var List = Immutable.List;
+var Seq = Immutable.Seq;
+var name = 'Brainy';
+var type = smurf;
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+const {List, Seq} = require('immutable');
+let [name, type] = ['Brainy', smurf];// name === 'Brainy'
+            </code></pre>
+        </div>
+    </section>
+    <section id="rest-parameters">
+        <h3>Rest Parameters</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+function f(a, b) {
+    var args = Array.prototype.slice.call(arguments, f.length);
+    // do something with args array
+}
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+function f(a, b, ...args) {
+    // do something with a, b, and args
+}
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">Reduce boilerplate code</li>
+        </ul>
+    </section>
+
+    <section id="spread-syntax">
+        <h3>Spread Syntax</h3>
+        <pre><code data-trim>
+function foo(x, y, z) {/* logic and stuff */}
+let nums = [2, 3, 4];
+        </code></pre>
+        <div class="fragment">
+            <pre><code class="javascript" data-trim>
+// ES5
+foo.apply(null, nums);
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript" data-trim>
+// ES6
+foo(...nums);
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// Array concatenation
+[1, ...nums, 5, 6]// [1, 2, 3, 4, 5, 6]
+[1, 2, 3, ...nums]// [1, 2, 3, 2, 3, 4]
+[...nums, 3, 2, 1]// [2, 3, 4, 3, 2, 1]
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">Reduce <i>more</i> boilerplate code</li>
+        </ul>
+    </section>
+
+    <section id="arrow-functions">
+        <h3>Arrow Functions</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var isEven = function(num) {
+    return num % 2 === 0;
+};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+let isEven = num => (num % 2 === 0);
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">shorter functions</li>
+            <li class="fragment">non-binding of <code>this</code></li>
+            <li class="fragment">non-binding of <code>arguments</code></li>
+        </ul>
+    </section>
+    <section id="arrow-functions-in-action">
+        <h3>Arrow Functions in Action</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// NO-OP
+let noop = () => {};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// predicates
+[1, 2, 3, 4, 5].some(num => (num % 2 === 0));// true
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// chaining
+[1, 2, 3, 4, 5]
+    .map(num => ++num)// add 1
+    .map(num => num)  // identity
+    .filter(isEven);  // [2, 4, 6]
+            </code></pre>
+        </div>
+    </section>
+</section>
+
+		<section id="functional-programming-concepts">
+    <section id="three-tees-of-functional-programming" data-markdown>
+        ### The 3 "T's" of Functional Programming
+        > Become "functionally" functional with...
+
+        - composabili-**TEE**
+        - immutabili-**TEE**
+        - puri-**TEE**
+
+    </section>
+    <section id="composabili-tee" >
+        <h2>Composability</h2>
+        <blockquote>
+            Build functions with functions
+        </blockquote>
+        <pre class="fragment"><code>
+let isNumberLike = val => !isNaN(Number(val));
+
+console.log(isNumberLike(3));//true
+console.log(isNumberLike('42'));//true
+console.log(isNumberLike('foo'));//false
+        </code></pre>
+        <div class="fragment">
+            Those that work with me might expect something like...
+            <pre><code>
+// require lodash functions
+const {flow, toNumber, negate} = require('lodash');
+
+let isNumberLike = flow(toNumber, negate(isNaN));
+            </code></pre>
+        </div>
+    </section>
+    <section style="margin: 0 25%;">
+         <div class="tumblr-post" data-href="https://embed.tumblr.com/embed/post/dcJpVAvYGPYFZ1ntlGckfg/149273556583" data-did="da39a3ee5e6b4b0d3255bfef95601890afd80709"><a href="https://jhwohlgemuth.tumblr.com/post/149273556583">https://jhwohlgemuth.tumblr.com/post/149273556583</a></div>  <script async src="https://assets.tumblr.com/post.js"></script>
+    </section>
+    <section id="immutabili-tee">
+        <h2>Immutability</h2>
+        <blockquote>
+            Favor immutable patterns
+        </blockquote>
+        <pre><code>
+// mutation
+let arr = [1, 2, 3, 4, 5];
+arr.push(6);
+console.log(arr);// [1, 2, 3, 4, 5, 6]
+        </code></pre>
+        <pre><code class="javascript">
+// no mutation...?
+let oldArr = [1, 2, 3, 4, 5];
+let newArr = oldArr.concat(6);
+        </code></pre>
+        <pre class="fragment"><code class="javascript">
+// no mutation!
+console.log(oldArr);// [1, 2, 3, 4, 5]
+console.log(newArr);// [1, 2, 3, 4, 5, 6]
+        </code></pre>
+    </section>
+    <section id="immutabili-tee-loops">
+        <h2>Immutability</h2>
+        <blockquote>
+            Favor immutable patterns
+        </blockquote>
+        <pre><code class="javascript">
+// mutation
+let nums = [1, 2, 3, 4, 5];
+for(var i = 0; i < nums.length; i++) {
+    nums[i] = nums[i] + 1;
+}
+        </code></pre>
+        <pre><code class="javascript">
+// no mutation...?
+let oldNums = [1, 2, 3, 4, 5];
+let newNums = oldNums.map(num => ++num);
+        </code></pre>
+        <pre class="fragment"><code class="javascript">
+// no mutation!
+console.log(oldNums);// [1, 2, 3, 4, 5]
+console.log(newNums);// [2, 3, 4, 5, 6]
+        </code></pre>
+        <aside class="notes">I had to look up how to use for blocks to write the first snippet</aside>
+    </section>
+    <section id="immutabili-tee-immutablejs" data-background-iframe="https://facebook.github.io/immutable-js/">
+        <span style="color: black;">...more on this later.</span>
+    </section>
+    <section id="puri-tee">
+        <h2>Purity</h2>
+        <blockquote>
+            Find balance between arity and state
+        </blockquote>
+        <pre class="fragment"><code>
+let foo = () => console.log('bar');
+let obj = {foo};
+        </code></pre>
+        <pre class="fragment"><code>
+// NOT PURE
+let triggerFooNotPure = () => obj.foo();
+        </code></pre>
+        <pre class="fragment"><code>
+// PURE
+let triggerFooPure = (obj) => obj.foo();
+        </code></pre>
+        <pre class="fragment"><code class="javascript">
+// pure functions generally have higher "arity"
+triggerFooNotPure();
+triggerFooPure(obj);
+        </code></pre>
+    </section>
+    <section id="puri-tee-redux" data-background-iframe="http://redux.js.org/">
+        <span style="color: black; background-color: rgba(255, 255, 255, 0.9);padding: 10px;border-radius: 10px;">...more on this later.</span>
+    </section>
+    <section style="margin: 0 25%; transform: scale(1.1);">
+        <blockquote class="twitter-tweet" data-lang="en">
+            <p lang="en" dir="ltr">JS Functional Programming Array.prototype cheat sheet <a href="https://t.co/diGW4FaOso">pic.twitter.com/diGW4FaOso</a></p>&mdash; Jason Wohlgemuth (@jhwohlgemuth) <a href="https://twitter.com/jhwohlgemuth/status/862812187282296833">May 11, 2017</a>
+        </blockquote>
+        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </section>
+</section>
+
+		<section id="immutable">
+    <section id="immutable-overview" data-markdown>
+        ## Immutable.js
+        > It is all about ["Trees and Sharing"](https://www.youtube.com/watch?v=Wo0qiGPSV-s)
+
+        - ***Not*** a programming panacea
+        - ***Not*** a new concept
+        - ***Not*** the only option
+        - ***Not*** hard to learn
+    </section>
+    <section id="cereal-meme-what-about-const-and-freeze" data-background="img/cereal-guy-meme.jpg" data-background-size="contain"></section>
+    <section id="what-about-const-and-freeze" data-markdown>
+        - `Object.freeze` is *shallow*
+        - `const` constants are block-scoped
+    </section>
+    <section id="no-freeze-in-immutablejs" data-background="img/no-freeze-in-immutablejs.png" data-background-size="contain" data-markdown></section>
+    <section id="trees-and-sharing">
+        <h2>Tries and Sharing</h2>
+        <blockquote>Pronounced "tree"...comes from "re<b>trie</b>val"</blockquote>
+        <aside class="notes">
+            "Trees and sharing" comes from a talk by Anjana Vakil at JSConf EU 2017
+        </aside>
+    </section>
+    <section id="trees-and-sharing-design">
+        <quote>"[tries are] designed to facilitate retrieval of information and [...] the branching storage structure, when developed, resembles a tree."</quote>
+        <p><b>Licklider, J.C.R. </b><i>Man-Computer Symbiosis</i>, 1960</p>
+    </section>
+    <section id="trees-and-sharing-usage">
+        <quote>"[tries are] inefficient for small memories, but [become] increasingly efficient in using available storage space as memory size increases."</quote>
+        <p><b>Licklider, J.C.R. </b><i>Man-Computer Symbiosis</i>, 1960</p>
+    </section>
+    <section id="immutablejs-youtube-talk">
+        <iframe class="stretch" src="https://www.youtube.com/embed/I7IdS-PbEgI?start=350" frameborder="0" allowfullscreen></iframe>
+        <a href="https://youtu.be/I7IdS-PbEgI?t=52s">React.js Conf 2015 - Immutable Data and React</a>
+        <aside class="notes">
+            STOP at 10:38 (when you see "map.get("R");")
+        </aside>
+    </section>
+    <section id="not-a-panacea" data-markdown>
+        ### Use Cases
+
+        - Your application has complex state
+        - You often find yourself making "deep value" comparisons
+        - You like time travel to be "baked in"
+        - You want to enforce immutability *programmatically*
+        - ~~You want to fix your application's performance problems~~
+    </section>
+    <section id="doing-it-wrong" data-background="img/doing-it-wrong.jpg" data-background-size="contain"></section>
+    <section id="not-a-new-concept">
+        <h3>Immutability is not a new concept</h3>
+        ...just ask a "real" language like Clojure(script) or Scala.
+        <aside class="notes">
+            My point is that a language's "correctness" is not the only factor.
+            I am very interested in Clojure and ClojureScript, but the popularity of the two pail in comparison to JavaScript.
+        </aside>
+    </section>
+    <section id="oh-no-he-didnt" data-background="img/shocked.gif"></section>
+    <section id="focus-on-what-matters">
+        <h2>JavaScript</h2>
+        <p>does not have efficient <a href="https://en.wikipedia.org/wiki/Persistent_data_structure">persistent data structures</a></p>
+        <p class="fragment">...and I am OK with that</p>
+    </section>
+    <section id="keep-it-real" data-markdown>
+        ### JavaScript
+        allows almost ***anyone***
+
+        to make almost ***anything***
+
+        that can be used almost ***anywhere***
+    </section>
+    <section id="not-the-only-option" data-markdown>
+        ##Not the only option
+        > ...but I strongly recommend it
+    </section>
+    <section id="mori" data-background-iframe="https://swannodette.github.io/mori/" data-background-interactive></section>
+    <section id="immutablejs-repo-tour" data-background="img/star-tour.gif">
+        <p><a href="https://github.com/facebook/immutable-js/">Immutable.js GitHub repo</a></p>
+        <aside class="notes" data-markdown>
+            - stars and watchers
+            - issues (search by label --> bug, "help wanted", etc...)
+            - pull requests
+            - mention flow and typescript
+            - contributing guide
+        </aside>
+    </section>
+    <section id="immutable-JS">
+        <h2><span style="opacity: 0.2;">Immutable.</span><b>JS</b></h2>
+        <ul>
+            <li>JavaScript-first API</li>
+            <li>Closely mirrors Array, Map, and Set</li>
+            <li>Accepts raw JavaScript objects</li>
+            <li>Converts back to "raw" JavaScript</li>
+        </ul>
+    </section>
+    <section id="immutablejs-api" data-markdown>
+        ### API Elements
+        - Lists
+        - Maps
+        - Sets
+        - Seqs
+          - Range (indexed Seqs)
+          - Repeat (similar to Range)
+        - Records
+        - Stacks
+        - is
+    </section>
+    <section id="immutablejs-lists" data-markdown>
+        ### Lists
+        > **Indexed** collections (much like JS Arrays)
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate
+        - reduce
+    </section>
+    <section id="immutablejs-maps" data-markdown>
+        ### Maps
+        > **Keyed** collections (much like ES6 Maps)
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate (non-ordered)
+        - reduce
+    </section>
+    <section id="immutablejs-sets" data-markdown>
+        ### Sets
+        > Collection of **unique values**
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate (non-ordered)
+        - reduce
+
+    </section>
+    <section id="immutablejs-seqs" data-markdown>
+        ### Seqs
+        > **Lazy** sequence of values
+
+        ```js
+        const {Range} = require('immutable');
+
+        let someValue = Range(1, Infinity)
+            .skip(1000)
+            .map(n => -n)
+            .filter(n => n % 2 === 0)
+            .take(2)
+            .reduce((r, n) => r * n, 1);
+
+        console.log(someValue);// 1006008
+        ```
+    </section>
+    <section id="immutablejs-other" data-markdown>
+        ### Other Stuff
+        - Stack - "shift/unshift efficient" indexed collections
+        - Repeat - a lot like Range
+        - Record - like an object that enforces rules
+    </section>
+    <section id="immutablejs-is-maps">
+        <h3 style="text-transform: lowercase;"><code>is()</code></h3>
+        <p>Maps</p>
+        <div>
+            <pre><code class="javascript" data-trim>
+const {Map, is} = require('immutable');
+            </code></pre>
+        </div>
+        <div class="">
+            <pre><code class="javascript">
+// Shallow
+const m1 = Map({foo: 'bar'});
+const m2 = Map({foo: 'bar'});
+const m3 = Map({foo: 'baz'});
+
+console.log(is(m1, m2));// true
+console.log(is(m1, m3));// false
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// Deep
+const m4 = Map({a: {b: 'c'}});
+const m5 = Map({a: {b: 'c'}});
+const m6 = Map({a: Map({b: 'c'})});
+const m7 = Map({a: Map({b: 'c'})});
+
+console.log(is(m4, m5));// false
+console.log(is(m6, m7));// true
+            </code></pre>
+        </div>
+    </section>
+    <section id="immutablejs-is-lists">
+        <h3><code style="text-transform: lowercase;">is()</code></h3>
+        <p>Lists</p>
+        <div>
+            <pre><code class="javascript" data-trim>
+const {Map, is} = require('immutable');
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="javascript">
+const l1 = List.of('timely', 'cost-effective');
+const l2 = List.of('timely', 'cost-effective');
+const l3 = l1;
+const l4 = l1.push('cost-effective');
+
+console.log(is(l1, l2));// true
+console.log(is(l1, l3));// true
+console.log(is(l1, l4));// false
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// equals allows for chained expressions
+const isEqual = List.of('timely')
+    .push('cost-effective')
+    .equals(l3);
+console.log(isEqual);// true
+            </code></pre>
+        </div>
+    </section>
+    <section id="immutable-takeaway">
+        <h3>Immutabili-tee</h3>
+        <blockquote style="padding:25px;">Find balance between "dev" and "run" time</blockquote>
+        <ul>
+            <li class="fragment">"Interface vs. Implementation"</li>
+            <li class="fragment">Browser intepreters get faster every day</li>
+            <li class="fragment">Is "push" really the bottle-neck in your application?</li>
+        </ul>
+    </section>
+</section>
+
+		<section id="redux">
+    <section id="redux-overview" data-markdown>
+        ## Redux.js
+        > 100% pure, Grade-A, ~~steak~~ state
+
+        - Simple solution for a complicated problem
+        - Easy to learn, difficult to master
+        - Plays well with others
+    </section>
+    <section id="motivation">
+        <h3>Why is Redux Needed?</h3>
+        <h2>
+            <span class="fragment">S</span>
+            <span class="fragment">T</span>
+            <span class="fragment">A</span>
+            <span class="fragment">T</span>
+            <span class="fragment">E</span>
+        </h2>
+    </section>
+    <section id="cereal-meme-isnt-state-hard" data-background="img/cereal-guy-meme.jpg" data-background-size="contain"></section>
+    <section id="redux-is-simple" data-background="img/redux-is-simple.gif">
+        <div style="padding:20px;background-color:rgba(0,0,0,0.8);border-radius:20px;">
+            <p>Yes. But, Redux <i><b>is</b></i> simple.</p>
+            <p>(seriously...the minimized version is <code>&lt;6KB</code>)</p>
+        </div>
+    </section>
+    <section id="cereal-meme-squint" data-background="img/cereal-guy-meme-squint.jpg" data-background-size="contain"></section>
+    <section id="redux-three-principles">
+        <h3>Redux Three Principles</h3>
+        <ul>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#single-source-of-truth">Single Source of Truth</a></li>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#state-is-read-only">State is read-only</a></li>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#changes-are-made-with-pure-functions">Changes are made with pure functions</a></li>
+        </ul>
+    </section>
+    <section id="redux-three-principles-in-other-words">
+        <h3>In other words...</h3>
+        <ul>
+            <li class="fragment">Manage state in <b>stores</b></li>
+            <li class="fragment">Communicate state changes with <b>actions</b></li>
+            <li class="fragment">Transform state with <b>reducers</b></li>
+        </ul>
+    </section>
+    <section id="redux-three-principles-in-other-other-words">
+        <h3>In other other words...</h3>
+        <ul>
+            <li class="fragment">State is <b>immutable</b></li>
+            <li class="fragment">Reducers are <b>pure</b></li>
+            <li class="fragment">Enhance via <b>composition</b></li>
+        </ul>
+    </section>
+    <section id="store">
+        <h3>stores</h3>
+        <blockquote>Immutable state</blockquote>
+        <div>
+            <pre><code class="stretch js">
+    const redux = require('redux');
+    const {applyMiddleware, compose, createStore} = redux;
+    const initialState = {
+        count: 42
+    };
+    const store = createStore(
+        reducer,
+        initialState,
+        compose(
+            applyMiddleware(dispatchLogger),
+            addGetStatePathParameter()// store enhancer
+        )
+    );
+            </code></pre>
+        </div>
+    </section>
+    <section id="reducers">
+        <h3>reducers</h3>
+        <blockquote>Just pure JavaScript functions</blockquote>
+        <div>
+            <pre><code class="js">
+    const {update} = require('lodash');
+    // pure functions
+    let increment = val => val + 1;
+    let decrement = val => val - 1;
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'INCREMENT':
+                return update(state, 'count', increment);
+            case 'DECREMENT':
+                return update(state, 'count', decrement);
+            default:
+                return state;
+        }
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="middleware">
+        <h3>middleware</h3>
+        <blockquote>Composable code</blockquote>
+        <div>
+            <pre><code class="js">
+    function dispatchLogger() {
+        return (next) => (action) => {
+            console.log('Dispatch: ' + action.type);
+            return next(action);
+        };
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="store-ehancers">
+        <h3>Store Enhancers</h3>
+        <blockquote>middleware's "big brother"</blockquote>
+        <div>
+            <pre><code class="js">
+function addGetStatePathParameter() {
+    return (createStore) => (reducer, state, enhancer) => {
+        const store = createStore(reducer, state, enhancer);
+        let getState = (path) => {
+            if (typeof(path) === 'string') {
+                return get(store.getState(), path);
+            } else {
+                return store.getState();
+            }
+        };
+        let {dispatch, subscribe} = store;
+        return {getState, dispatch, subscribe};
+    };
+}
+            </code></pre>
+        </div>
+        <aside class="notes">
+            Store enhancers can do things that middleware can not, since store enhancers wrap the entire store.
+        </aside>
+    </section>
+    <section id="actions">
+        <h3>actions</h3>
+        <blockquote>Payloads with purpose</blockquote>
+        <div>
+            <pre><code class="js">
+const {dispatch, getState} = require('redux');
+
+console.log(store.getState());// {count: 42}
+
+store.dispatch({type: 'INCREMENT'});
+console.log(store.getState());//// {count: 43}
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+// with addGetStatePathParameter store enhancer
+console.log(store.getState('count'));// 43
+            </code></pre>
+        </div>
+    </section>
+    <section id="flux-standard-action" data-markdown>
+        ### Flux Standard Action
+        > Human-friendly standard for actions
+
+        - Actions **MUST**
+          - Be plain JS object
+          - Have a `type` property
+
+        - Actions **MAY**
+          - Have an `error` property
+          - Have a `payload` property
+          - Have a `meta` property
+    </section>
+    <section id="flux-standard-action-example">
+        <h3>Flux Standard Action Example</h3>
+        <div>
+            <pre><code class="js">
+{
+    type: 'ADD_SLIDE',
+    meta: {
+       platform: 'Reveal.js',
+       useMarkdown: false
+    },
+    payload: {
+        text: 'Flux Standard Action Example'
+    }
+}
+            </code></pre>
+        </div>
+    </section>
+    <section id="async-actions">
+        <h3>Async Actions</h3>
+        <p><a href="https://github.com/gaearon/redux-thunk">redux-thunk</a> middleware</p>
+        <div>
+            <pre><code class="js">
+    const {createStore, applyMiddleware} = require('redux');
+    const thunk = require('redux-thunk');
+
+    const store = createStore(
+        reducer,
+        applyMiddleware(thunk)
+    );
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+    // async increment function
+    function increment() {
+        return dispatch => {
+            setTimeout(() => dispatch(increment()), 1000);
+        };
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="lets-thunk-for-a-minute" data-background="img/thunk.gif">
+        <h3 style="text-transform:lowercase;">thunk?</h3>
+        <p>Function that wraps an expression to delay its evaluation</p>
+        <div>
+            <pre><code class="js">
+    let thunk = () => console.log('hello');
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+    thunk();// 'hello'
+            </code></pre>
+        </div>
+    </section>
+    <section id="switch-alternatives" data-markdown>
+        ### Redux Design Considerations
+        ### ~~Things I did not have time for~~
+
+        - General architecture
+        - Alternatives for `switch`
+        - Reducer modularity and composition
+        - [Using Immutable.js with Redux](http://redux.js.org/docs/recipes/UsingImmutableJS.html)
+        - Integrating Redux with a UI library
+    </section>
+    <section id="redux-ecosystem" data-markdown>
+        ### Redux Ecosystem
+        - [redux-devtools](https://github.com/gaearon/redux-devtools) *hot reloading, action replay, and customizable UI*
+        - [redux-thunk](https://github.com/gaearon/redux-thunk) *write action creators that return a function instead of an action*
+        - [redux-loop](https://github.com/redux-loop/redux-loop) *Elm's effect system to Redux*
+        - [redux-data-structures](https://redux-data-structures.js.org/) *functions for common reducers*
+        - [reduce-reducers](https://github.com/acdlite/reduce-reducers)
+    </section>
+</section>
+
+		<section id="references" data-background="img/web-surfing-time.gif">
+			<h3>References</h3>
+			<div style="padding:20px;background-color:rgba(0,0,0,0.8);border-radius:20px;">
+				<ul>
+					<li><a href="https://groups.csail.mit.edu/medg/people/psz/Licklider.html">Man-Computer Symbiosis</a></li>
+					<li><a href="https://facebook.github.io/immutable-js/">Immutable.js Homepage (d'uh)</a></li>
+					<li><a href="http://redux.js.org/">Redux Homepage (double d'uh)</a></li>
+					<li><a href="https://auth0.com/blog/intro-to-immutable-js/">Introduction to Immutable.js and Functional Programming Concepts</a></li>
+					<li><a href="https://medium.com/@dtinth/immutable-js-persistent-data-structures-and-structural-sharing-6d163fbd73d2">Immutable.js, persistent data structures and structural sharing</a></li>
+					<li><a href="http://redux.js.org/docs/recipes/UsingImmutableJS.html">Using Immutable.JS with Redux</a></li>
+					<li><a href="https://www.slideshare.net/mohitthatte/a-deep-dive-into-clojures-data-structures-euroclojure-2015">A Deep Dive into Clojure's Data Structures</a></li>
+					<li><a href="https://github.com/acdlite/flux-standard-action">Flux standard action</a></li>
+					<li><a href="https://www.amazon.com/Developing-Redux-Edge-Johannes-Lumpe/dp/1939902460/ref=sr_1_1?ie=UTF8&qid=1502482368&sr=8-1&keywords=Developing+a+Redux+Edge">Developing a Redux Edge (book)</a></li>
+					<li><a href="https://stackoverflow.com/a/32920459">Why use redux over flux?</a></li>
+				</ul>
+			</div>
+		</section>
+	</div>
+</div>
+
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="components/reveal.js/js/reveal.js"></script>
+	<script>
+		// Full list of configuration options available at:
+		// https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			history: true,
+			center: true,
+			fragments: true,
+			transition: 'slide', // none/fade/slide/convex/concave/zoom
+			slideNumber: 'c/t',
+			// Optional reveal.js plugins
+			dependencies: [
+				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+				// Interpret Markdown in <section> elements
+        		{ src: './components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        		{ src: './components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: './components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: './components/reveal.js/plugin/zoom-js/zoom.js', async: true },
+				{ src: './components/reveal.js/plugin/notes/notes.js', async: true }
+			]
+		});
+
+	</script>
+    <!-- Socket.io client-->
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script>
+            (function(){
+              Reveal.initialize({
+                history: true
+              });
+              var proto = window.location.protocol;
+              var h = window.location.host;
+              var val = proto+'//'+h;
+              console.log(val);
+              var socket = io.connect(val);
+              socket.on('slidechanged', function (data) {
+                Reveal.slide(data.indexh, data.indexv, data.indexf);
+              });
+            })();
+        </script>
+</body>
+</html>
+
