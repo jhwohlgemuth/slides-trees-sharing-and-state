@@ -1,0 +1,241 @@
+<section id="redux">
+    <section id="redux-overview" data-markdown>
+        ## Redux.js
+        > 100% pure, Grade-A, ~~steak~~ state
+
+        - Simple solution for a complicated problem
+        - Easy to learn, difficult to master
+        - Plays well with others
+    </section>
+    <section id="motivation">
+        <h3>Why is Redux Needed?</h3>
+        <h2>
+            <span class="fragment">S</span>
+            <span class="fragment">T</span>
+            <span class="fragment">A</span>
+            <span class="fragment">T</span>
+            <span class="fragment">E</span>
+        </h2>
+    </section>
+    <section id="cereal-meme-isnt-state-hard" data-background="img/cereal-guy-meme.jpg" data-background-size="contain"></section>
+    <section id="redux-is-simple" data-background="img/redux-is-simple.gif">
+        <div style="padding:20px;background-color:rgba(0,0,0,0.8);border-radius:20px;">
+            <p>Yes. But, Redux <i><b>is</b></i> simple.</p>
+            <p>(seriously...the minimized version is <code>&lt;6KB</code>)</p>
+        </div>
+    </section>
+    <section id="cereal-meme-squint" data-background="img/cereal-guy-meme-squint.jpg" data-background-size="contain"></section>
+    <section id="redux-three-principles">
+        <h3>Redux Three Principles</h3>
+        <ul>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#single-source-of-truth">Single Source of Truth</a></li>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#state-is-read-only">State is read-only</a></li>
+            <li class="fragment"><a href="http://redux.js.org/docs/introduction/ThreePrinciples.html#changes-are-made-with-pure-functions">Changes are made with pure functions</a></li>
+        </ul>
+    </section>
+    <section id="redux-three-principles-in-other-words">
+        <h3>In other words...</h3>
+        <ul>
+            <li class="fragment">Manage state in <b>stores</b></li>
+            <li class="fragment">Communicate state changes with <b>actions</b></li>
+            <li class="fragment">Transform state with <b>reducers</b></li>
+        </ul>
+    </section>
+    <section id="redux-three-principles-in-other-other-words">
+        <h3>In other other words...</h3>
+        <ul>
+            <li class="fragment">State is <b>immutable</b></li>
+            <li class="fragment">Reducers are <b>pure</b></li>
+            <li class="fragment">Enhance via <b>composition</b></li>
+        </ul>
+    </section>
+    <section id="store">
+        <h3>stores</h3>
+        <blockquote>Immutable state</blockquote>
+        <div>
+            <pre><code class="stretch js">
+    const redux = require('redux');
+    const {applyMiddleware, compose, createStore} = redux;
+    const initialState = {
+        count: 42
+    };
+    const store = createStore(
+        reducer,
+        initialState,
+        compose(
+            applyMiddleware(dispatchLogger),
+            addGetStatePathParameter()// store enhancer
+        )
+    );
+            </code></pre>
+        </div>
+    </section>
+    <section id="reducers">
+        <h3>reducers</h3>
+        <blockquote>Just pure JavaScript functions</blockquote>
+        <div>
+            <pre><code class="js">
+    const {update} = require('lodash');
+    // pure functions
+    let increment = val => val + 1;
+    let decrement = val => val - 1;
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'INCREMENT':
+                return update(state, 'count', increment);
+            case 'DECREMENT':
+                return update(state, 'count', decrement);
+            default:
+                return state;
+        }
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="middleware">
+        <h3>middleware</h3>
+        <blockquote>Composable code</blockquote>
+        <div>
+            <pre><code class="js">
+    function dispatchLogger() {
+        return (next) => (action) => {
+            console.log('Dispatch: ' + action.type);
+            return next(action);
+        };
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="store-ehancers">
+        <h3>Store Enhancers</h3>
+        <blockquote>middleware's "big brother"</blockquote>
+        <div>
+            <pre><code class="js">
+function addGetStatePathParameter() {
+    return (createStore) => (reducer, state, enhancer) => {
+        const store = createStore(reducer, state, enhancer);
+        let getState = (path) => {
+            if (typeof(path) === 'string') {
+                return get(store.getState(), path);
+            } else {
+                return store.getState();
+            }
+        };
+        let {dispatch, subscribe} = store;
+        return {getState, dispatch, subscribe};
+    };
+}
+            </code></pre>
+        </div>
+        <aside class="notes">
+            Store enhancers can do things that middleware can not, since store enhancers wrap the entire store.
+        </aside>
+    </section>
+    <section id="actions">
+        <h3>actions</h3>
+        <blockquote>Payloads with purpose</blockquote>
+        <div>
+            <pre><code class="js">
+const {dispatch, getState} = require('redux');
+
+console.log(store.getState());// {count: 42}
+
+store.dispatch({type: 'INCREMENT'});
+console.log(store.getState());//// {count: 43}
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+// with addGetStatePathParameter store enhancer
+console.log(store.getState('count'));// 43
+            </code></pre>
+        </div>
+    </section>
+    <section id="flux-standard-action" data-markdown>
+        ### Flux Standard Action
+        > Human-friendly standard for actions
+
+        - Actions **MUST**
+          - Be plain JS object
+          - Have a `type` property
+
+        - Actions **MAY**
+          - Have an `error` property
+          - Have a `payload` property
+          - Have a `meta` property
+    </section>
+    <section id="flux-standard-action-example">
+        <h3>Flux Standard Action Example</h3>
+        <div>
+            <pre><code class="js">
+{
+    type: 'ADD_SLIDE',
+    meta: {
+       platform: 'Reveal.js',
+       useMarkdown: false
+    },
+    payload: {
+        text: 'Flux Standard Action Example'
+    }
+}
+            </code></pre>
+        </div>
+    </section>
+    <section id="async-actions">
+        <h3>Async Actions</h3>
+        <p><a href="https://github.com/gaearon/redux-thunk">redux-thunk</a> middleware</p>
+        <div>
+            <pre><code class="js">
+    const {createStore, applyMiddleware} = require('redux');
+    const thunk = require('redux-thunk');
+
+    const store = createStore(
+        reducer,
+        applyMiddleware(thunk)
+    );
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+    // async increment function
+    function increment() {
+        return dispatch => {
+            setTimeout(() => dispatch(increment()), 1000);
+        };
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section id="lets-thunk-for-a-minute" data-background="img/thunk.gif">
+        <h3 style="text-transform:lowercase;">thunk?</h3>
+        <p>Function that wraps an expression to delay its evaluation</p>
+        <div>
+            <pre><code class="js">
+    let thunk = () => console.log('hello');
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="js">
+    thunk();// 'hello'
+            </code></pre>
+        </div>
+    </section>
+    <section id="switch-alternatives" data-markdown>
+        ### Redux Design Considerations
+        ### ~~Things I did not have time for~~
+
+        - General architecture
+        - Alternatives for `switch`
+        - Reducer modularity and composition
+        - [Using Immutable.js with Redux](http://redux.js.org/docs/recipes/UsingImmutableJS.html)
+        - Integrating Redux with a UI library
+    </section>
+    <section id="redux-ecosystem" data-markdown>
+        ### Redux Ecosystem
+        - [redux-devtools](https://github.com/gaearon/redux-devtools) *hot reloading, action replay, and customizable UI*
+        - [redux-thunk](https://github.com/gaearon/redux-thunk) *write action creators that return a function instead of an action*
+        - [redux-loop](https://github.com/redux-loop/redux-loop) *Elm's effect system to Redux*
+        - [redux-data-structures](https://redux-data-structures.js.org/) *functions for common reducers*
+        - [reduce-reducers](https://github.com/acdlite/reduce-reducers)
+    </section>
+</section>

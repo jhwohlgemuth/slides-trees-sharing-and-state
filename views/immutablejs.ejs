@@ -1,0 +1,232 @@
+<section id="immutable">
+    <section id="immutable-overview" data-markdown>
+        ## Immutable.js
+        > It is all about ["Trees and Sharing"](https://www.youtube.com/watch?v=Wo0qiGPSV-s)
+
+        - ***Not*** a programming panacea
+        - ***Not*** a new concept
+        - ***Not*** the only option
+        - ***Not*** hard to learn
+    </section>
+    <section id="cereal-meme-what-about-const-and-freeze" data-background="img/cereal-guy-meme.jpg" data-background-size="contain"></section>
+    <section id="what-about-const-and-freeze" data-markdown>
+        - `Object.freeze` is *shallow*
+        - `const` constants are block-scoped
+    </section>
+    <section id="no-freeze-in-immutablejs" data-background="img/no-freeze-in-immutablejs.png" data-background-size="contain" data-markdown></section>
+    <section id="trees-and-sharing">
+        <h2>Tries and Sharing</h2>
+        <blockquote>Pronounced "tree"...comes from "re<b>trie</b>val"</blockquote>
+        <aside class="notes">
+            "Trees and sharing" comes from a talk by Anjana Vakil at JSConf EU 2017
+        </aside>
+    </section>
+    <section id="trees-and-sharing-design">
+        <quote>"[tries are] designed to facilitate retrieval of information and [...] the branching storage structure, when developed, resembles a tree."</quote>
+        <p><b>Licklider, J.C.R. </b><i>Man-Computer Symbiosis</i>, 1960</p>
+    </section>
+    <section id="trees-and-sharing-usage">
+        <quote>"[tries are] inefficient for small memories, but [become] increasingly efficient in using available storage space as memory size increases."</quote>
+        <p><b>Licklider, J.C.R. </b><i>Man-Computer Symbiosis</i>, 1960</p>
+    </section>
+    <section id="immutablejs-youtube-talk">
+        <iframe class="stretch" src="https://www.youtube.com/embed/I7IdS-PbEgI?start=350" frameborder="0" allowfullscreen></iframe>
+        <a href="https://youtu.be/I7IdS-PbEgI?t=52s">React.js Conf 2015 - Immutable Data and React</a>
+        <aside class="notes">
+            STOP at 10:38 (when you see "map.get("R");")
+        </aside>
+    </section>
+    <section id="not-a-panacea" data-markdown>
+        ### Use Cases
+
+        - Your application has complex state
+        - You often find yourself making "deep value" comparisons
+        - You like time travel to be "baked in"
+        - You want to enforce immutability *programmatically*
+        - ~~You want to fix your application's performance problems~~
+    </section>
+    <section id="doing-it-wrong" data-background="img/doing-it-wrong.jpg" data-background-size="contain"></section>
+    <section id="not-a-new-concept">
+        <h3>Immutability is not a new concept</h3>
+        ...just ask a "real" language like Clojure(script) or Scala.
+        <aside class="notes">
+            My point is that a language's "correctness" is not the only factor.
+            I am very interested in Clojure and ClojureScript, but the popularity of the two pail in comparison to JavaScript.
+        </aside>
+    </section>
+    <section id="oh-no-he-didnt" data-background="img/shocked.gif"></section>
+    <section id="focus-on-what-matters">
+        <h2>JavaScript</h2>
+        <p>does not have efficient <a href="https://en.wikipedia.org/wiki/Persistent_data_structure">persistent data structures</a></p>
+        <p class="fragment">...and I am OK with that</p>
+    </section>
+    <section id="keep-it-real" data-markdown>
+        ### JavaScript
+        allows almost ***anyone***
+
+        to make almost ***anything***
+
+        that can be used almost ***anywhere***
+    </section>
+    <section id="not-the-only-option" data-markdown>
+        ##Not the only option
+        > ...but I strongly recommend it
+    </section>
+    <section id="mori" data-background-iframe="https://swannodette.github.io/mori/" data-background-interactive></section>
+    <section id="immutablejs-repo-tour" data-background="img/star-tour.gif">
+        <p><a href="https://github.com/facebook/immutable-js/">Immutable.js GitHub repo</a></p>
+        <aside class="notes" data-markdown>
+            - stars and watchers
+            - issues (search by label --> bug, "help wanted", etc...)
+            - pull requests
+            - mention flow and typescript
+            - contributing guide
+        </aside>
+    </section>
+    <section id="immutable-JS">
+        <h2><span style="opacity: 0.2;">Immutable.</span><b>JS</b></h2>
+        <ul>
+            <li>JavaScript-first API</li>
+            <li>Closely mirrors Array, Map, and Set</li>
+            <li>Accepts raw JavaScript objects</li>
+            <li>Converts back to "raw" JavaScript</li>
+        </ul>
+    </section>
+    <section id="immutablejs-api" data-markdown>
+        ### API Elements
+        - Lists
+        - Maps
+        - Sets
+        - Seqs
+          - Range (indexed Seqs)
+          - Repeat (similar to Range)
+        - Records
+        - Stacks
+        - is
+    </section>
+    <section id="immutablejs-lists" data-markdown>
+        ### Lists
+        > **Indexed** collections (much like JS Arrays)
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate
+        - reduce
+    </section>
+    <section id="immutablejs-maps" data-markdown>
+        ### Maps
+        > **Keyed** collections (much like ES6 Maps)
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate (non-ordered)
+        - reduce
+    </section>
+    <section id="immutablejs-sets" data-markdown>
+        ### Sets
+        > Collection of **unique values**
+
+        - create / clone / convert
+        - get / set / delete
+        - search
+        - iterate (non-ordered)
+        - reduce
+
+    </section>
+    <section id="immutablejs-seqs" data-markdown>
+        ### Seqs
+        > **Lazy** sequence of values
+
+        ```js
+        const {Range} = require('immutable');
+
+        let someValue = Range(1, Infinity)
+            .skip(1000)
+            .map(n => -n)
+            .filter(n => n % 2 === 0)
+            .take(2)
+            .reduce((r, n) => r * n, 1);
+
+        console.log(someValue);// 1006008
+        ```
+    </section>
+    <section id="immutablejs-other" data-markdown>
+        ### Other Stuff
+        - Stack - "shift/unshift efficient" indexed collections
+        - Repeat - a lot like Range
+        - Record - like an object that enforces rules
+    </section>
+    <section id="immutablejs-is-maps">
+        <h3 style="text-transform: lowercase;"><code>is()</code></h3>
+        <p>Maps</p>
+        <div>
+            <pre><code class="javascript" data-trim>
+const {Map, is} = require('immutable');
+            </code></pre>
+        </div>
+        <div class="">
+            <pre><code class="javascript">
+// Shallow
+const m1 = Map({foo: 'bar'});
+const m2 = Map({foo: 'bar'});
+const m3 = Map({foo: 'baz'});
+
+console.log(is(m1, m2));// true
+console.log(is(m1, m3));// false
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// Deep
+const m4 = Map({a: {b: 'c'}});
+const m5 = Map({a: {b: 'c'}});
+const m6 = Map({a: Map({b: 'c'})});
+const m7 = Map({a: Map({b: 'c'})});
+
+console.log(is(m4, m5));// false
+console.log(is(m6, m7));// true
+            </code></pre>
+        </div>
+    </section>
+    <section id="immutablejs-is-lists">
+        <h3><code style="text-transform: lowercase;">is()</code></h3>
+        <p>Lists</p>
+        <div>
+            <pre><code class="javascript" data-trim>
+const {Map, is} = require('immutable');
+            </code></pre>
+        </div>
+        <div>
+            <pre><code class="javascript">
+const l1 = List.of('timely', 'cost-effective');
+const l2 = List.of('timely', 'cost-effective');
+const l3 = l1;
+const l4 = l1.push('cost-effective');
+
+console.log(is(l1, l2));// true
+console.log(is(l1, l3));// true
+console.log(is(l1, l4));// false
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// equals allows for chained expressions
+const isEqual = List.of('timely')
+.push('cost-effective')
+.equals(l3);
+console.log(isEqual);// true
+            </code></pre>
+        </div>
+    </section>
+    <section id="immutable-takeaway">
+        <h3>Immutabili-tee</h3>
+        <blockquote style="padding:25px;">Find balance between "dev" and "run" time</blockquote>
+        <ul>
+            <li class="fragment">"Interface vs. Implementation"</li>
+            <li class="fragment">Browser intepreters get faster every day</li>
+            <li class="fragment">Is "push" really the bottle-neck in your application?</li>
+        </ul>
+    </section>
+</section>

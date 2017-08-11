@@ -1,0 +1,152 @@
+<section id="es6-primer">
+    <section data-markdown>
+        ### ES6 Primer
+        - Object shorthand property names
+        - Destructuring assignment
+        - Rest and Spread
+        - Arrow functions
+    </section>
+    <section id="object-shorthand">
+        <h3>Object shorthand property names</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var color = 'blue';
+var size = 'small';
+var smurf = {
+color: color,
+size: size
+};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+let color = 'blue';
+let size = 'small';
+let smurf = {color, size};// {color: 'blue', size: 'small'}
+            </code></pre>
+        </div>
+    </section>
+    <section id="destructuring-assignment">
+        <h3>Destructuring assignment</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var Immutable = require('immutable');
+var List = Immutable.List;
+var Seq = Immutable.Seq;
+var name = 'Brainy';
+var type = smurf;
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+const {List, Seq} = require('immutable');
+let [name, type] = ['Brainy', smurf];// name === 'Brainy'
+            </code></pre>
+        </div>
+    </section>
+    <section id="rest-parameters">
+        <h3>Rest Parameters</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+function f(a, b) {
+var args = Array.prototype.slice.call(arguments, f.length);
+// do something with args array
+}
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+function f(a, b, ...args) {
+// do something with a, b, and args
+}
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">Reduce boilerplate code</li>
+        </ul>
+    </section>
+
+    <section id="spread-syntax">
+        <h3>Spread Syntax</h3>
+        <pre><code data-trim>
+function foo(x, y, z) {/* logic and stuff */}
+let nums = [2, 3, 4];
+        </code></pre>
+        <div class="fragment">
+            <pre><code class="javascript" data-trim>
+// ES5
+foo.apply(null, nums);
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript" data-trim>
+// ES6
+foo(...nums);
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// Array concatenation
+[1, ...nums, 5, 6]// [1, 2, 3, 4, 5, 6]
+[1, 2, 3, ...nums]// [1, 2, 3, 2, 3, 4]
+[...nums, 3, 2, 1]// [2, 3, 4, 3, 2, 1]
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">Reduce <i>more</i> boilerplate code</li>
+        </ul>
+    </section>
+
+    <section id="arrow-functions">
+        <h3>Arrow Functions</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES5
+var isEven = function(num) {
+return num % 2 === 0;
+};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// ES6
+let isEven = num => (num % 2 === 0);
+            </code></pre>
+        </div>
+        <ul>
+            <li class="fragment">shorter functions</li>
+            <li class="fragment">non-binding of <code>this</code></li>
+            <li class="fragment">non-binding of <code>arguments</code></li>
+        </ul>
+    </section>
+    <section id="arrow-functions-in-action">
+        <h3>Arrow Functions in Action</h3>
+        <div class="fragment">
+            <pre><code class="javascript">
+// NO-OP
+let noop = () => {};
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// predicates
+[1, 2, 3, 4, 5].some(num => (num % 2 === 0));// true
+            </code></pre>
+        </div>
+        <div class="fragment">
+            <pre><code class="javascript">
+// chaining
+[1, 2, 3, 4, 5]
+.map(num => ++num)// add 1
+.map(num => num)  // identity
+.filter(isEven);  // [2, 4, 6]
+            </code></pre>
+        </div>
+    </section>
+</section>
