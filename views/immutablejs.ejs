@@ -161,32 +161,29 @@
     <section id="immutablejs-is-maps">
         <h3 style="text-transform: lowercase;"><code>is()</code></h3>
         <p>Maps</p>
-        <div>
-            <pre><code class="javascript" data-trim>
-const {Map, is} = require('immutable');
-            </code></pre>
-        </div>
         <div class="">
             <pre><code class="javascript">
-// Shallow
-const m1 = Map({foo: 'bar'});
-const m2 = Map({foo: 'bar'});
-const m3 = Map({foo: 'baz'});
+    const {Map, is} = require('immutable');
 
-console.log(is(m1, m2));// true
-console.log(is(m1, m3));// false
+    // Shallow
+    const m1 = Map({foo: 'bar'});
+    const m2 = Map({foo: 'bar'});
+    const m3 = Map({foo: 'baz'});
+
+    console.log(is(m1, m2));// true
+    console.log(is(m1, m3));// false
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// Deep
-const m4 = Map({a: {b: 'c'}});
-const m5 = Map({a: {b: 'c'}});
-const m6 = Map({a: Map({b: 'c'})});
-const m7 = Map({a: Map({b: 'c'})});
+    // Deep
+    const m4 = Map({a: {b: 'c'}});
+    const m5 = Map({a: {b: 'c'}});
+    const m6 = Map({a: Map({b: 'c'})});
+    const m7 = Map({a: Map({b: 'c'})});
 
-console.log(is(m4, m5));// false
-console.log(is(m6, m7));// true
+    console.log(is(m4, m5));// false
+    console.log(is(m6, m7));// true
             </code></pre>
         </div>
     </section>
@@ -194,20 +191,17 @@ console.log(is(m6, m7));// true
         <h3><code style="text-transform: lowercase;">is()</code></h3>
         <p>Lists</p>
         <div>
-            <pre><code class="javascript" data-trim>
-const {Map, is} = require('immutable');
-            </code></pre>
-        </div>
-        <div>
             <pre><code class="javascript">
-const l1 = List.of('timely', 'cost-effective');
-const l2 = List.of('timely', 'cost-effective');
-const l3 = l1;
-const l4 = l1.push('cost-effective');
+    const {Map, is} = require('immutable');
 
-console.log(is(l1, l2));// true
-console.log(is(l1, l3));// true
-console.log(is(l1, l4));// false
+    const l1 = List.of('timely', 'cost-effective');
+    const l2 = List.of('timely', 'cost-effective');
+    const l3 = l1;
+    const l4 = l1.push('cost-effective');
+
+    console.log(is(l1, l2));// true
+    console.log(is(l1, l3));// true
+    console.log(is(l1, l4));// false
             </code></pre>
         </div>
         <div class="fragment">

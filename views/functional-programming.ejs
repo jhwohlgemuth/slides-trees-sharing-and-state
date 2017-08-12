@@ -14,19 +14,19 @@
             Build functions with functions
         </blockquote>
         <pre class="fragment"><code>
-let isNumberLike = val => !isNaN(Number(val));
+    let isNumberLike = val => !isNaN(Number(val));
 
-console.log(isNumberLike(3));//true
-console.log(isNumberLike('42'));//true
-console.log(isNumberLike('foo'));//false
+    console.log(isNumberLike(3));//true
+    console.log(isNumberLike('42'));//true
+    console.log(isNumberLike('foo'));//false
         </code></pre>
         <div class="fragment">
             Those that work with me might expect something like...
             <pre><code>
-// require lodash functions
-const {flow, toNumber, negate} = require('lodash');
+    // require lodash functions
+    const {flow, toNumber, negate} = require('lodash');
 
-let isNumberLike = flow(toNumber, negate(isNaN));
+    let isNumberLike = flow(toNumber, negate(isNaN));
             </code></pre>
         </div>
     </section>
@@ -39,20 +39,20 @@ let isNumberLike = flow(toNumber, negate(isNaN));
             Favor immutable patterns
         </blockquote>
         <pre><code>
-// mutation
-let arr = [1, 2, 3, 4, 5];
-arr.push(6);
-console.log(arr);// [1, 2, 3, 4, 5, 6]
+    // mutation
+    let arr = [1, 2, 3, 4, 5];
+    arr.push(6);
+    console.log(arr);// [1, 2, 3, 4, 5, 6]
         </code></pre>
         <pre><code class="javascript">
-// no mutation...?
-let oldArr = [1, 2, 3, 4, 5];
-let newArr = oldArr.concat(6);
+    // no mutation...?
+    let oldArr = [1, 2, 3, 4, 5];
+    let newArr = oldArr.concat(6);
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// no mutation!
-console.log(oldArr);// [1, 2, 3, 4, 5]
-console.log(newArr);// [1, 2, 3, 4, 5, 6]
+    // no mutation!
+    console.log(oldArr);// [1, 2, 3, 4, 5]
+    console.log(newArr);// [1, 2, 3, 4, 5, 6]
         </code></pre>
     </section>
     <section id="immutability-loops">
@@ -61,21 +61,21 @@ console.log(newArr);// [1, 2, 3, 4, 5, 6]
             Favor immutable patterns
         </blockquote>
         <pre><code class="javascript">
-// mutation
-let nums = [1, 2, 3, 4, 5];
-for(var i = 0; i < nums.length; i++) {
-    nums[i] = nums[i] + 1;
-}
+    // mutation
+    let nums = [1, 2, 3, 4, 5];
+    for(var i = 0; i < nums.length; i++) {
+        nums[i] = nums[i] + 1;
+    }
         </code></pre>
         <pre><code class="javascript">
-// no mutation...?
-let oldNums = [1, 2, 3, 4, 5];
-let newNums = oldNums.map(num => ++num);
+    // no mutation...?
+    let oldNums = [1, 2, 3, 4, 5];
+    let newNums = oldNums.map(num => ++num);
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// no mutation!
-console.log(oldNums);// [1, 2, 3, 4, 5]
-console.log(newNums);// [2, 3, 4, 5, 6]
+    // no mutation!
+    console.log(oldNums);// [1, 2, 3, 4, 5]
+    console.log(newNums);// [2, 3, 4, 5, 6]
         </code></pre>
         <aside class="notes">I had to look up how to use for blocks to write the first snippet</aside>
     </section>
@@ -87,22 +87,22 @@ console.log(newNums);// [2, 3, 4, 5, 6]
         <blockquote>
             Find balance between arity and state
         </blockquote>
-        <pre class="fragment"><code>
-let foo = () => console.log('bar');
-let obj = {foo};
+        <pre class="js fragment"><code>
+    let foo = () => console.log('bar');
+    let obj = {foo};
         </code></pre>
         <pre class="fragment"><code>
-// NOT PURE
-let triggerFooNotPure = () => obj.foo();
+    // NOT PURE
+    let triggerFooNotPure = () => obj.foo();
         </code></pre>
-        <pre class="fragment"><code>
-// PURE
-let triggerFooPure = (obj) => obj.foo();
+        <pre class="js fragment"><code>
+    // PURE
+    let triggerFooPure = (obj) => obj.foo();
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// pure functions generally have higher "arity"
-triggerFooNotPure();
-triggerFooPure(obj);
+    // pure functions generally have higher "arity"
+    triggerFooNotPure();
+    triggerFooPure(obj);
         </code></pre>
     </section>
     <section id="purity-redux" data-background-iframe="http://redux.js.org/">
