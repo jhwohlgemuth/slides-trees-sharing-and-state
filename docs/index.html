@@ -59,7 +59,7 @@
 			</ol>
 		</section>
 		<section id="es6-primer">
-    <section data-markdown>
+    <section id="es6-primer-overview" data-markdown>
         ### ES6 Primer
         - Object shorthand property names
         - Destructuring assignment
@@ -70,21 +70,21 @@
         <h3>Object shorthand property names</h3>
         <div class="fragment">
             <pre><code class="javascript">
-// ES5
-var color = 'blue';
-var size = 'small';
-var smurf = {
-    color: color,
-    size: size
-};
+    // ES5
+    var color = 'blue';
+    var size = 'small';
+    var smurf = {
+        color: color,
+        size: size
+    };
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// ES6
-let color = 'blue';
-let size = 'small';
-let smurf = {color, size};// {color: 'blue', size: 'small'}
+    // ES6
+    let color = 'blue';
+    let size = 'small';
+    let smurf = {color, size};// {color: 'blue', size: 'small'}
             </code></pre>
         </div>
     </section>
@@ -92,19 +92,19 @@ let smurf = {color, size};// {color: 'blue', size: 'small'}
         <h3>Destructuring assignment</h3>
         <div class="fragment">
             <pre><code class="javascript">
-// ES5
-var Immutable = require('immutable');
-var List = Immutable.List;
-var Seq = Immutable.Seq;
-var name = 'Brainy';
-var type = smurf;
+    // ES5
+    var Immutable = require('immutable');
+    var List = Immutable.List;
+    var Seq = Immutable.Seq;
+    var name = 'Brainy';
+    var type = smurf;
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// ES6
-const {List, Seq} = require('immutable');
-let [name, type] = ['Brainy', smurf];// name === 'Brainy'
+    // ES6
+    const {List, Seq} = require('immutable');
+    let [name, type] = ['Brainy', smurf];// name === 'Brainy'
             </code></pre>
         </div>
     </section>
@@ -167,16 +167,16 @@ foo(...nums);
         <h3>Arrow Functions</h3>
         <div class="fragment">
             <pre><code class="javascript">
-// ES5
-var isEven = function(num) {
-    return num % 2 === 0;
-};
+    // ES5
+    var isEven = function(num) {
+        return num % 2 === 0;
+    };
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// ES6
-let isEven = num => (num % 2 === 0);
+    // ES6
+    let isEven = num => (num % 2 === 0);
             </code></pre>
         </div>
         <ul>
@@ -189,23 +189,23 @@ let isEven = num => (num % 2 === 0);
         <h3>Arrow Functions in Action</h3>
         <div class="fragment">
             <pre><code class="javascript">
-// NO-OP
-let noop = () => {};
+    // NO-OP
+    let noop = () => {};
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// predicates
-[1, 2, 3, 4, 5].some(num => (num % 2 === 0));// true
+    // predicates
+    [1, 2, 3, 4, 5].some(num => (num % 2 === 0));// true
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// chaining
-[1, 2, 3, 4, 5]
-    .map(num => ++num)// add 1
-    .map(num => num)  // identity
-    .filter(isEven);  // [2, 4, 6]
+    // chaining
+    [1, 2, 3, 4, 5]
+        .map(num => ++num)// add 1
+        .map(num => num)  // identity
+        .filter(isEven);  // [2, 4, 6]
             </code></pre>
         </div>
     </section>
@@ -221,107 +221,107 @@ let noop = () => {};
         - puri-**TEE**
 
     </section>
-    <section id="composabili-tee" >
+    <section id="composability" >
         <h2>Composability</h2>
         <blockquote>
             Build functions with functions
         </blockquote>
         <pre class="fragment"><code>
-let isNumberLike = val => !isNaN(Number(val));
+    let isNumberLike = val => !isNaN(Number(val));
 
-console.log(isNumberLike(3));//true
-console.log(isNumberLike('42'));//true
-console.log(isNumberLike('foo'));//false
+    console.log(isNumberLike(3));//true
+    console.log(isNumberLike('42'));//true
+    console.log(isNumberLike('foo'));//false
         </code></pre>
         <div class="fragment">
             Those that work with me might expect something like...
             <pre><code>
-// require lodash functions
-const {flow, toNumber, negate} = require('lodash');
+    // require lodash functions
+    const {flow, toNumber, negate} = require('lodash');
 
-let isNumberLike = flow(toNumber, negate(isNaN));
+    let isNumberLike = flow(toNumber, negate(isNaN));
             </code></pre>
         </div>
     </section>
-    <section style="margin: 0 25%;">
+    <section id="modularity" style="margin: 0 25%;">
          <div class="tumblr-post" data-href="https://embed.tumblr.com/embed/post/dcJpVAvYGPYFZ1ntlGckfg/149273556583" data-did="da39a3ee5e6b4b0d3255bfef95601890afd80709"><a href="https://jhwohlgemuth.tumblr.com/post/149273556583">https://jhwohlgemuth.tumblr.com/post/149273556583</a></div>  <script async src="https://assets.tumblr.com/post.js"></script>
     </section>
-    <section id="immutabili-tee">
+    <section id="immutability">
         <h2>Immutability</h2>
         <blockquote>
             Favor immutable patterns
         </blockquote>
         <pre><code>
-// mutation
-let arr = [1, 2, 3, 4, 5];
-arr.push(6);
-console.log(arr);// [1, 2, 3, 4, 5, 6]
+    // mutation
+    let arr = [1, 2, 3, 4, 5];
+    arr.push(6);
+    console.log(arr);// [1, 2, 3, 4, 5, 6]
         </code></pre>
         <pre><code class="javascript">
-// no mutation...?
-let oldArr = [1, 2, 3, 4, 5];
-let newArr = oldArr.concat(6);
+    // no mutation...?
+    let oldArr = [1, 2, 3, 4, 5];
+    let newArr = oldArr.concat(6);
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// no mutation!
-console.log(oldArr);// [1, 2, 3, 4, 5]
-console.log(newArr);// [1, 2, 3, 4, 5, 6]
+    // no mutation!
+    console.log(oldArr);// [1, 2, 3, 4, 5]
+    console.log(newArr);// [1, 2, 3, 4, 5, 6]
         </code></pre>
     </section>
-    <section id="immutabili-tee-loops">
+    <section id="immutability-loops">
         <h2>Immutability</h2>
         <blockquote>
             Favor immutable patterns
         </blockquote>
         <pre><code class="javascript">
-// mutation
-let nums = [1, 2, 3, 4, 5];
-for(var i = 0; i < nums.length; i++) {
-    nums[i] = nums[i] + 1;
-}
+    // mutation
+    let nums = [1, 2, 3, 4, 5];
+    for(var i = 0; i < nums.length; i++) {
+        nums[i] = nums[i] + 1;
+    }
         </code></pre>
         <pre><code class="javascript">
-// no mutation...?
-let oldNums = [1, 2, 3, 4, 5];
-let newNums = oldNums.map(num => ++num);
+    // no mutation...?
+    let oldNums = [1, 2, 3, 4, 5];
+    let newNums = oldNums.map(num => ++num);
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// no mutation!
-console.log(oldNums);// [1, 2, 3, 4, 5]
-console.log(newNums);// [2, 3, 4, 5, 6]
+    // no mutation!
+    console.log(oldNums);// [1, 2, 3, 4, 5]
+    console.log(newNums);// [2, 3, 4, 5, 6]
         </code></pre>
         <aside class="notes">I had to look up how to use for blocks to write the first snippet</aside>
     </section>
-    <section id="immutabili-tee-immutablejs" data-background-iframe="https://facebook.github.io/immutable-js/">
+    <section id="immutability-immutablejs" data-background-iframe="https://facebook.github.io/immutable-js/">
         <span style="color: black;">...more on this later.</span>
     </section>
-    <section id="puri-tee">
+    <section id="purity">
         <h2>Purity</h2>
         <blockquote>
             Find balance between arity and state
         </blockquote>
-        <pre class="fragment"><code>
-let foo = () => console.log('bar');
-let obj = {foo};
+        <pre class="js fragment"><code>
+    let foo = () => console.log('bar');
+    let obj = {foo};
         </code></pre>
         <pre class="fragment"><code>
-// NOT PURE
-let triggerFooNotPure = () => obj.foo();
+    // NOT PURE
+    let triggerFooNotPure = () => obj.foo();
         </code></pre>
-        <pre class="fragment"><code>
-// PURE
-let triggerFooPure = (obj) => obj.foo();
+        <pre class="js fragment"><code>
+    // PURE
+    let triggerFooPure = (obj) => obj.foo();
         </code></pre>
         <pre class="fragment"><code class="javascript">
-// pure functions generally have higher "arity"
-triggerFooNotPure();
-triggerFooPure(obj);
+    // pure functions generally have higher "arity"
+    triggerFooNotPure();
+    triggerFooPure(obj);
         </code></pre>
     </section>
-    <section id="puri-tee-redux" data-background-iframe="http://redux.js.org/">
+    <section id="purity-redux" data-background-iframe="http://redux.js.org/">
         <span style="color: black; background-color: rgba(255, 255, 255, 0.9);padding: 10px;border-radius: 10px;">...more on this later.</span>
     </section>
-    <section style="margin: 0 25%; transform: scale(1.1);">
+    <section id="fp-cheatsheet" style="margin: 0 25%; transform: scale(1.1);">
         <blockquote class="twitter-tweet" data-lang="en">
             <p lang="en" dir="ltr">JS Functional Programming Array.prototype cheat sheet <a href="https://t.co/diGW4FaOso">pic.twitter.com/diGW4FaOso</a></p>&mdash; Jason Wohlgemuth (@jhwohlgemuth) <a href="https://twitter.com/jhwohlgemuth/status/862812187282296833">May 11, 2017</a>
         </blockquote>
@@ -492,32 +492,29 @@ triggerFooPure(obj);
     <section id="immutablejs-is-maps">
         <h3 style="text-transform: lowercase;"><code>is()</code></h3>
         <p>Maps</p>
-        <div>
-            <pre><code class="javascript" data-trim>
-const {Map, is} = require('immutable');
-            </code></pre>
-        </div>
         <div class="">
             <pre><code class="javascript">
-// Shallow
-const m1 = Map({foo: 'bar'});
-const m2 = Map({foo: 'bar'});
-const m3 = Map({foo: 'baz'});
+    const {Map, is} = require('immutable');
 
-console.log(is(m1, m2));// true
-console.log(is(m1, m3));// false
+    // Shallow
+    const m1 = Map({foo: 'bar'});
+    const m2 = Map({foo: 'bar'});
+    const m3 = Map({foo: 'baz'});
+
+    console.log(is(m1, m2));// true
+    console.log(is(m1, m3));// false
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// Deep
-const m4 = Map({a: {b: 'c'}});
-const m5 = Map({a: {b: 'c'}});
-const m6 = Map({a: Map({b: 'c'})});
-const m7 = Map({a: Map({b: 'c'})});
+    // Deep
+    const m4 = Map({a: {b: 'c'}});
+    const m5 = Map({a: {b: 'c'}});
+    const m6 = Map({a: Map({b: 'c'})});
+    const m7 = Map({a: Map({b: 'c'})});
 
-console.log(is(m4, m5));// false
-console.log(is(m6, m7));// true
+    console.log(is(m4, m5));// false
+    console.log(is(m6, m7));// true
             </code></pre>
         </div>
     </section>
@@ -525,29 +522,26 @@ console.log(is(m6, m7));// true
         <h3><code style="text-transform: lowercase;">is()</code></h3>
         <p>Lists</p>
         <div>
-            <pre><code class="javascript" data-trim>
-const {Map, is} = require('immutable');
-            </code></pre>
-        </div>
-        <div>
             <pre><code class="javascript">
-const l1 = List.of('timely', 'cost-effective');
-const l2 = List.of('timely', 'cost-effective');
-const l3 = l1;
-const l4 = l1.push('cost-effective');
+    const {Map, is} = require('immutable');
 
-console.log(is(l1, l2));// true
-console.log(is(l1, l3));// true
-console.log(is(l1, l4));// false
+    const l1 = List.of('timely', 'cost-effective');
+    const l2 = List.of('timely', 'cost-effective');
+    const l3 = l1;
+    const l4 = l1.push('cost-effective');
+
+    console.log(is(l1, l2));// true
+    console.log(is(l1, l3));// true
+    console.log(is(l1, l4));// false
             </code></pre>
         </div>
         <div class="fragment">
             <pre><code class="javascript">
-// equals allows for chained expressions
-const isEqual = List.of('timely')
-    .push('cost-effective')
-    .equals(l3);
-console.log(isEqual);// true
+    // equals allows for chained expressions
+    const isEqual = List.of('timely')
+        .push('cost-effective')
+        .equals(l3);
+    console.log(isEqual);// true
             </code></pre>
         </div>
     </section>
@@ -600,7 +594,7 @@ console.log(isEqual);// true
     <section id="redux-three-principles-in-other-words">
         <h3>In other words...</h3>
         <ul>
-            <li class="fragment">Manage state in <b>stores</b></li>
+            <li class="fragment">Maintain state in <b>stores</b></li>
             <li class="fragment">Communicate state changes with <b>actions</b></li>
             <li class="fragment">Transform state with <b>reducers</b></li>
         </ul>
@@ -608,12 +602,12 @@ console.log(isEqual);// true
     <section id="redux-three-principles-in-other-other-words">
         <h3>In other other words...</h3>
         <ul>
-            <li class="fragment">State is <b>immutable</b></li>
-            <li class="fragment">Reducers are <b>pure</b></li>
-            <li class="fragment">Enhance via <b>composition</b></li>
+            <li class="fragment">Actions are <a href="https://github.com/lodash/lodash/blob/master/isPlainObject.js"><b>plain objects</b></a></li>
+            <li class="fragment">Reducers are <a href="https://trees-sharing-and-state.herokuapp.com/#/purity"><b>pure functions</b></a></li>
+            <li class="fragment">Action + Reducer = "State change"</li>
         </ul>
     </section>
-    <section id="store">
+    <section id="stores">
         <h3>stores</h3>
         <blockquote>Immutable state</blockquote>
         <div>
