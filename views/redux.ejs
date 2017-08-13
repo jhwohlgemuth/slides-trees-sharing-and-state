@@ -51,7 +51,7 @@
     </section>
     <section id="stores">
         <h3>stores</h3>
-        <blockquote>Immutable state</blockquote>
+        <blockquote>Read-only state</blockquote>
         <div>
             <pre><code class="stretch js">
     const redux = require('redux');
@@ -72,7 +72,7 @@
     </section>
     <section id="reducers">
         <h3>reducers</h3>
-        <blockquote>Just pure JavaScript functions</blockquote>
+        <blockquote>Old state goes in, new state comes out</blockquote>
         <div>
             <pre><code class="js">
     const {update} = require('lodash');
@@ -133,21 +133,21 @@ function addGetStatePathParameter() {
     </section>
     <section id="actions">
         <h3>actions</h3>
-        <blockquote>Payloads with purpose</blockquote>
+        <blockquote>Plain payloads with purpose</blockquote>
         <div>
             <pre><code class="js">
-const {dispatch, getState} = require('redux');
+    const {dispatch, getState} = require('redux');
 
-console.log(store.getState());// {count: 42}
+    console.log(store.getState());// {count: 42}
 
-store.dispatch({type: 'INCREMENT'});
-console.log(store.getState());//// {count: 43}
+    store.dispatch({type: 'INCREMENT'});
+    console.log(store.getState());//// {count: 43}
             </code></pre>
         </div>
         <div>
             <pre><code class="js">
-// with addGetStatePathParameter store enhancer
-console.log(store.getState('count'));// 43
+    // with addGetStatePathParameter store enhancer
+    console.log(store.getState('count'));// 43
             </code></pre>
         </div>
     </section>
@@ -168,16 +168,16 @@ console.log(store.getState('count'));// 43
         <h3>Flux Standard Action Example</h3>
         <div>
             <pre><code class="js">
-{
-    type: 'ADD_SLIDE',
-    meta: {
-       platform: 'Reveal.js',
-       useMarkdown: false
-    },
-    payload: {
-        text: 'Flux Standard Action Example'
+    {
+        type: 'ADD_SLIDE',
+        meta: {
+           platform: 'Reveal.js',
+           useMarkdown: false
+        },
+        payload: {
+            text: 'Flux Standard Action Example'
+        }
     }
-}
             </code></pre>
         </div>
     </section>
